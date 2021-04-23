@@ -23,7 +23,7 @@ title = "CLI tools FTW (or: how to release your CLI tools with goreleaser)"
 description = "How to use goreleaser for publishing Go CLI tools beyond go get"
 author = "Christoph Berger"
 email = "chris@appliedgo.net"
-date = "2020-12-11"
+date = "2021-04-23"
 draft = "true"
 categories = ["Go Ecosystem"]
 tags = ["deployment", "packaging", "distribution"]
@@ -51,7 +51,9 @@ Luckily, you do not need to become a package manager expert. There is a tool for
 
 CI/CD pipelines usually include `goreleaser` in their workflows. In this context, using `goreleaser` is super simple. Just push a Git tag that consists of a (semantic!) version number, and the CI/CD workflow does the rest.
 
-If you develop your Go CLI tool without a full-blown CI/CD pipeline, `goreleaser` is almost as easy to use as a command-line tool. In the following sections, I present a short walkthrough of setting up and using `goreleaser` for publishing a binary on GitHub and for Homebrew (as an example of an OS package manager. `goreleaser` provides a couple more to choose from).
+If you develop your Go CLI tool without a full-blown CI/CD pipeline, `goreleaser` is almost as easy to use as a command-line tool. In the following sections, I present a short walkthrough of setting up and using `goreleaser` for publishing a binary on GitHub and for Homebrew as an example of an OS package manager. (`goreleaser` provides a couple more to choose from).
+
+As a sample project, I use `goman`, the "missing man pages" tool for Go that turns the repo README into an ad-hoc help page. (See [this post](https://appliedgo.net/goman/) for an intro to `goman`.)
 
 
 ## Using goreleaser on the command line
@@ -64,12 +66,12 @@ Setting up `goreleaser` consists of a couple of simple steps.
     * Add or modify prebuild hooks
     * Add a GitHub/GitLab/Gitea token
 
-There are a couple of optional steps available, depending on which features you want to use. Here, we focus on two of these.
+There are a couple of optional steps available, depending on which features you want to use. Here, I'll focus on two of these.
 
 1. How to release to Homebrew
 2. How to sign your release
 
-Finally, we will add a cool bonus feature: The ability to have your binary print the current version, without having to manually maintain a version string in your code.
+Finally, I will show a fancy bonus feature: How to have your binary print the current version, without having to manually maintain a version string in your code.
 
 
 ### Installing goreleaser
@@ -90,13 +92,9 @@ to generate a default config file. The configuration uses YAML syntax. If you ar
 The default file looks like this:
 
 ```yaml
-# This is an example goreleaser.yaml file with some sane defaults.
-# Make sure to check the documentation at http://goreleaser.com
 before:
   hooks:
-    # You may remove this if you don't use go modules.
     - go mod download
-    # you may remove this if you don't need go generate
     - go generate ./...
 builds:
   - env:
@@ -126,12 +124,69 @@ changelog:
 
 The file already contains a couple of build actions and release targets.
 
-* "before" hooks that run prior to building the binary
-* build settings (defaulting to disabling CGO and compiling to linux, windows and darwin)
-* an archives target that produces tarred and gzipped binaries
-* a checksum target that generates a checksum file
-* a snapshot setting, if you want to create a test release "between" two versions
-* and a changelog target for the release page on the Git host.
+* The "before" hooks declare commans to run prior to building the binary
+* The "builds" settings describe environment variables to use and target operating systems to compile for. (The provided defaults disable CGO and compile to linux, windows and darwin)
+* The "archives" target produces tarred and gzipped binaries. The "replacement" settings beneath controls how the resulting archive files are named.
+* The "checksum" target generates (surprise, surprise) a checksum file
+* The "snapshot" setting allows creating a test release "between" two versions
+* The "changelog" target generates a change log for the release page on the Git host.
+
+
+### A few basic customizations
+
+The first change I am going to apply is a modification of the before hooks. `goman` needs no `go generate`, and I also want to tidy my `go.mod` file at this occasion.
+
+```yaml
+before:
+  hooks:
+    - go mod tidy
+    - go mod download
+```
+
+Hooks are executed in the order of appearance, so no surprises here.
+
+This setup already allows a first test. `goreleaser` can run in a test mode, without publishing anything.
+
+Call
+
+```sh
+goreleaser --snapshot --skip-publish
+```
+
+The command creates a `dist` directory, compiles binaries for all targets provided, and tars an gzips them into archives, based on the `archives` section in the above config.
+
+If you run this step yourself, you may notice a message saying, "gomod.proxy is disabled". This is indeed always true for snapshot builds, but is also the default for release builds. So my next change to the config file is to enable the Go proxy, in order to ensure verifiable builds. There is a special `gomod` option available for this:
+
+```yaml
+gomod:
+  proxy: true
+```
+
+Also, for Windows, the archive format should be "zip". A simple format override inside the "archives" section does the trick.
+
+And while we are at it, let's also add the README and LICENSE files, and wrap it all into a single directory inside the archive.
+
+```yaml
+archives:
+  -
+    replacements:
+      ...
+    format_overrides:
+    - goos: windows
+      format: zip
+    files:
+      - README.md
+      - LICENSE.txt
+    wrap_in_directory: true
+
+```
+
+As a result, the generated archive contains the binary and the additional files inside a subdirectory with the archiv file's base name:
+
+![archive contents (png)](gomantarzip.png)
+
+
+
 
 ## The code
 */
