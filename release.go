@@ -89,7 +89,7 @@ After having installed `goreleaser`, cd into your Go CLI project and run
 goreleaser init
 ```
 
-to generate a default config file named `.goreleaser.yml`. The configuration uses YAML syntax. If you are not familiar with YAML, you will want to keep the [YAML reference]([YAML Ain’t Markup Language (YAML™) Version 1.2](https://yaml.org/spec/1.2/spec.html)) at hand. Don't let the large TOC of this spec scare you off. The spec comes with clear examples for each and every data type representation.
+to generate a default config file named `.goreleaser.yml`. The configuration uses YAML syntax. If you are not familiar with YAML, you will want to keep the [YAML reference](https://yaml.org/spec/1.2/spec.html) at hand. Don't let the large TOC of this spec scare you off. The spec comes with clear examples for each and every data type representation.
 
 The default file looks like this:
 
