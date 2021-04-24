@@ -220,21 +220,26 @@ goreleaser release --rm-dist
 ```
 
 Using `--rm-dist` causes `goreleaser` to remove the `dist/` directory prior to building, if it exists. Otherwise, `goreleaser` complains about the existing `dist/` dir, to avoid overwriting content unintentionally.
+___
 
-> A quick tip here: add `dist/*` to the `.gitignore` file. You neither need nor want to put the `dist/` folder under source control, and `goreleaser` complains about a dirty repo state if there are untracked files inside the working folder.
+*A quick tip here: add `dist/*` to the `.gitignore` file. You neither need nor want to put the `dist/` folder under source control, and `goreleaser` complains about a dirty repo state if there are untracked files inside the working folder.*
+___
 
 If everything goes well, the `release` command should do some generating, building, and packaging, and finally return a success message. At this point, the repository page on GitHub (or GitLab or Gitea or your Git server) shows a new release, including changelog and asset files:
 
+![github release](githubreleasepage.png)
 
 ## Your signature here:&nbsp;_____________
 
 Next, I want to sign my releases using my GitHub GPG key. By adding a GPG signature, I can prove that it was me who compiled the code. So if you trust me, you can also trust the binaries.
+___
 
-> **Pro Tip**: How can you put reasonable trust in a PGP or GPG based signature from some random guy on the internet?
->
-> Keybase.io aims to solve this problem by enabling that random guy to provide some kind of social proof.
->
-> If you head over to [my Keybase page](https://keybase.io/christophberger), you can see that I am verified as the owner of various accounts and Web sites (like Twitter, Reddit, HN, this blog, etc). If you know me from any of these services or pages, you have an idea of who I am, and you can decide if you want to trust me to be a good guy who does not put evil things inside the binaries.
+***Pro Tip**: How can you put reasonable trust in a PGP or GPG based signature from **some random guy on the internet?***
+
+*Keybase.io aims to solve this problem by enabling that random guy to provide some kind of social proof.*
+
+*If you head over to [my Keybase page](https://keybase.io/christophberger), you can see that I am verified as the owner of various accounts and Web sites (like Twitter, Reddit, HN, this blog, etc). If you know me from any of these services or pages, you have an idea of who I am, and you can decide if you want to trust me to be a good guy who does not put evil things inside the binaries.*
+___
 
 I have `gpg` installed and my Keychain is set up, so I can go ahead and add the following to `.goreleaser.yml`:
 
@@ -266,7 +271,7 @@ Now when I run `goreleaser release --rm-dist` (and enter my gpg password when pr
 A user only needs to download the binary of their choice, along with the accompagnying `.sig´ file, and call `gpg <path-to-sig-file>` to verify the signature. (The signature file and the binary file have to reside in the same directory of course.)
 
 
-## Ready to go... almost
+## Ready to go!
 
 This is a minimal setup for getting a binary out to an audience who do not have Go installed for compiling the binary from the source.
 
