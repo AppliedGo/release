@@ -1,3 +1,5 @@
+package main
+
 /*
 <!--
 Copyright (c) 2019 Christoph Berger. Some rights reserved.
@@ -23,8 +25,8 @@ title = "CLI tools FTW (or: how to distribute your CLI tools with goreleaser)"
 description = "How to use goreleaser for publishing Go CLI tools beyond go get"
 author = "Christoph Berger"
 email = "chris@appliedgo.net"
-date = "2021-04-23"
-draft = "true"
+date = "2021-04-24"
+draft = "false"
 categories = ["Go Ecosystem"]
 tags = ["deployment", "packaging", "distribution"]
 articletypes = ["Tutorial"]
