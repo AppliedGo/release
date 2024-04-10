@@ -57,7 +57,7 @@ When `goreleaser` is integrated into a CI/CD context, it is super simple to use.
 
 If you develop your Go CLI tool without a CI/CD pipeline, `goreleaser` as a command-line tool is almost as easy to use. In the following sections, I present a short walkthrough of setting up and using `goreleaser` for publishing binaries for various platforms on GitHub.
 
-As a sample project, I use `goman`, the "missing man pages" tool for Go that turns the repo README into an ad-hoc help page. (See [this post](https://appliedgo.net/goman/) for an intro to `goman`.)
+As a sample project, I use `goman`, the "missing man pages" tool for Go that turns the repo README into an ad-hoc help page. (See [this post]({{< ref "/goman/" >}}) for an intro to `goman`.)
 
 
 ## Using goreleaser on the command line
@@ -343,7 +343,7 @@ Goreleaser home: https://goreleaser.com
 
 ## See also
 
-[goman](https://appliedgo.net/goman), the missing Go man pages viewer.
+[goman]({{< ref "/goman" >}}), the missing Go man pages viewer.
 
 
 **Happy coding!**
